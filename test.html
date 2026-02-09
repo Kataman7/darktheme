@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page de Test - Quiz Auto-Responder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #00a67e;
+      padding-bottom: 10px;
+    }
+    
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-left: 4px solid #00a67e;
+      border-radius: 4px;
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: #00a67e;
+      font-size: 18px;
+    }
+    
+    .container-fluid {
+      background-color: #e8f4f8;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      border: 2px solid #00a67e;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .container-fluid:hover {
+      background-color: #d4f0f8;
+      box-shadow: 0 2px 8px rgba(0, 166, 126, 0.2);
+    }
+    
+    .content {
+      display: none;
+    }
+    
+    .count-container {
+      background-color: #fff3cd;
+      padding: 15px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 24px;
+      color: #856404;
+      border: 2px dashed #ffc107;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+      font-size: 13px;
+    }
+    
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+    
+    .info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+      border: 1px solid #bee5eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Page de Test - Quiz Auto-Responder</h1>
+    
+    <div class="info">
+      <strong>ℹ️ Utilisation:</strong> Cliquez sur la zone bleue (container-fluid) pour lancer le quiz et obtenir la réponse.
+    </div>
+
+    <!-- Test 1: Quiz simple -->
+    <div class="test-section">
+      <h2>Test 1: Question à Choix Multiple</h2>
+      
+      <div class="container-fluid">
+        <div class="content">Quel est le plus grand océan du monde?
+A) Océan Atlantique
+B) Océan Pacifique
+C) Océan Indien
+D) Océan Arctique</div>
+        
+        <p><strong>Cliquez ici pour obtenir la réponse</strong></p>
+      </div>
+      
+      <p><strong>Réponse attendue:</strong> B</p>
+      
+      <div class="count-container">?</div>
+      <div class="status"></div>
+    </div>
+
+    <!-- Test 2: Quiz mathématique -->
+    <div class="test-section">
+      <h2>Test 2: Problème Mathématique</h2>
+      
+      <div class="container-fluid">
+        <div class="content">Quelle est la solution de 2x + 4 = 10?
+A) x = 2
+B) x = 3
+C) x = 4
+D) x = 5</div>
+        
+        <p><strong>Cliquez ici pour obtenir la réponse</strong></p>
+      </div>
+      
+      <p><strong>Réponse attendue:</strong> B</p>
+      
+      <div class="count-container">?</div>
+      <div class="status"></div>
+    </div>
+
+    <!-- Test 3: Question capitale -->
+    <div class="test-section">
+      <h2>Test 3: Question Géographie</h2>
+      
+      <div class="container-fluid">
+        <div class="content">Quelle est la capitale de la France?
+A) Lyon
+B) Marseille
+C) Paris
+D) Nice</div>
+        
+        <p><strong>Cliquez ici pour obtenir la réponse</strong></p>
+      </div>
+      
+      <p><strong>Réponse attendue:</strong> C</p>
+      
+      <div class="count-container">?</div>
+      <div class="status"></div>
+    </div>
+
+    <!-- Instructions de débugage -->
+    <div class="test-section">
+      <h2>🔍 Débugage</h2>
+      
+      <p>Si l'extension ne fonctionne pas:</p>
+      <ol>
+        <li>Vérifiez que le token est configuré dans le popup</li>
+        <li>Ouvrez la console (F12) pour voir les messages d'erreur</li>
+        <li>Vérifiez que vous avez des crédits OpenAI disponibles</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // Écouter les réponses du content script
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.action === 'solveQuiz') {
+        const section = document.querySelector('.test-section:has(.count-container)');
+        if (section) {
+          const status = section.querySelector('.status');
+          const countContainer = section.querySelector('.count-container');
+          
+          if (request.success) {
+            countContainer.textContent = request.answer;
+            status.textContent = '✓ Réponse: ' + request.answer;
+            status.className = 'status success';
+          } else {
+            status.textContent = '✗ Erreur: ' + request.error;
+            status.className = 'status error';
+          }
+        }
+      }
+    });
+
+    console.log('Page de test chargée. Cliquez sur une zone bleue pour tester.');
+  </script>
+</body>
+</html>
