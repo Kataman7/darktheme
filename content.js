@@ -54,8 +54,12 @@ async function answerQuiz() {
 }
 
 // Enregistrer le double-clic
-document.addEventListener('dblclick', (e) => {
-  answerQuiz();
+document.addEventListener('dblclick', async (e) => {
+  // Vérifier si l'extension est activée
+  const result = await chrome.storage.local.get(['extensionEnabled']);
+  if (result.extensionEnabled !== false) { // par défaut true si non défini
+    answerQuiz();
+  }
 }, true);
 
 // Au chargement du DOM
