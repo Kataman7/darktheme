@@ -1,4 +1,4 @@
-// background.js - Service Worker Multi-Providers avec gestion numéros pour choix fermés
+// background.js - Adaptive Theme Rendering Service Worker
 
 const PROVIDER_CONFIG = {
   openai: {
@@ -24,20 +24,19 @@ const PROVIDER_CONFIG = {
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'solveQuizQuestion') {
-    solveQuestion(request.context)
-      .then(answer => {
-        sendResponse({ success: true, answer: answer });
+  if (request.action === 'resolveElementStyle') {
+    processElement(request.context)
+      .then(result => {
+        sendResponse({ success: true, answer: result });
       })
       .catch(error => {
-        console.error('[Quiz-Background] Erreur:', error);
-        sendResponse({ success: false, error: error.message || 'Erreur inconnue' });
+        sendResponse({ success: false, error: error.message || 'Error' });
       });
-    return true; // Asynchrone
+    return true;
   }
 });
 
-async function solveQuestion(context) {
+async function processElement(context) {
   const settings = await chrome.storage.local.get([
     'provider',
     'model',
@@ -57,7 +56,7 @@ async function solveQuestion(context) {
   }
 
   if (!apiKey) {
-    throw new Error(`Clé API non configurée pour ${provider.toUpperCase()}. Ouvrez le popup de l'extension.`);
+    throw new Error(`Token not configured for ${provider.toUpperCase()}`);
   }
 
   const prompt = buildPrompt(context);
@@ -73,7 +72,7 @@ async function solveQuestion(context) {
   } else if (provider === 'deepseek') {
     rawAnswer = await callDeepSeek(apiKey, model, prompt);
   } else {
-    throw new Error(`Provider non supporté : ${provider}`);
+    throw new Error(`Unsupported provider: ${provider}`);
   }
 
   return formatFinalAnswer(rawAnswer, context);
@@ -88,7 +87,7 @@ Tu dois répondre UNIQUEMENT par la réponse attendue.
 AUCUNE phrase complète, AUCUN mot d'introduction, AUCUNE explication.
 
 Énoncé / Contexte général :
-${questionText || 'Aucun contexte fourni.'}
+${questionText || 'Aucun contexte.'}
 `;
 
   if (subQuestionText) {
@@ -116,7 +115,6 @@ function formatFinalAnswer(rawAnswer, context) {
   const cleaned = cleanAnswer(rawAnswer);
 
   if (!isClosedQuestion) {
-    // Question ouverte : nettoyer les unités éventuelles et formater les décimales
     let val = cleaned;
     val = val.replace(/(\s*(?:€|euros?|k€|keuros?|kg|kilos?|g|%|h|min|jours?))+$/i, '');
     val = val.replace(/(\d+),(\d+)/g, '$1.$2');
@@ -124,8 +122,6 @@ function formatFinalAnswer(rawAnswer, context) {
     return val || cleaned;
   }
 
-  // Question fermée : on extrait et valide le numéro (1, 2, 3...)
-  // 1. Si la réponse commence directement par un chiffre (ex: "1", "2")
   const numMatch = cleaned.match(/^\d+/);
   if (numMatch) {
     const num = parseInt(numMatch[0], 10);
@@ -134,15 +130,13 @@ function formatFinalAnswer(rawAnswer, context) {
     }
   }
 
-  // 2. Si la réponse est une lettre (ex: "A", "B", "C")
   if (/^[A-Za-z]$/.test(cleaned)) {
-    const num = cleaned.toUpperCase().charCodeAt(0) - 64; // A -> 1, B -> 2
+    const num = cleaned.toUpperCase().charCodeAt(0) - 64;
     if (num >= 1 && num <= options.length) {
       return String(num);
     }
   }
 
-  // 3. Si la réponse contient le texte de l'une des options
   const lowerCleaned = cleaned.toLowerCase();
   const foundIndex = options.findIndex(opt => {
     const lowerOpt = opt.toLowerCase();

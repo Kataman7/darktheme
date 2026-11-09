@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Page de Test - Quiz URL Responder</title>
+  <title>Test Page - Element Inspection</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,7 +13,7 @@
       color: #1e293b;
     }
     .banner {
-      background: #2563eb;
+      background: #334155;
       color: white;
       padding: 16px 20px;
       border-radius: 8px;
@@ -70,21 +70,19 @@
 </head>
 <body>
   <div class="banner">
-    <h2>🧪 Page de test locale</h2>
-    <p>Cliquez sur n'importe quel champ ci-dessous (dropdown, bouton radio, ou champ texte). Regardez la barre d'adresse de votre navigateur ou l'encadré ci-dessous : la réponse s'affiche à la fin de l'URL !</p>
-    <div class="current-url-display" id="urlDisplay">URL courante : <span id="urlValue"></span></div>
+    <h2>🧪 Form Testing Sandbox</h2>
+    <div class="current-url-display" id="urlDisplay">URL: <span id="urlValue"></span></div>
   </div>
 
-  <!-- Question 1 : Vrai / Faux (Radio) -->
   <div class="content">
     <div class="formulation clearfix">
-      <h4 class="accesshide">Question 1 (Choix unique Radio)</h4>
+      <h4 class="accesshide">Section 1</h4>
       <input type="hidden" name="q3879867:1_:sequencecheck" value="1">
       <div class="qtext">
         <p>Les coûts préétablis consistent à utiliser comme référence durant l’année N les coûts réels de N-1.</p>
       </div>
       <fieldset class="ablock">
-        <legend class="prompt h6 font-weight-normal"><span class="sr-only">Question 1</span> Veuillez choisir une réponse :</legend>
+        <legend class="prompt h6 font-weight-normal"><span class="sr-only">Question 1</span> Option selector :</legend>
         <div class="answer">
           <div class="r0">
             <input type="radio" name="q3879867:1_answer" value="1" id="q3879867:1_answertrue">
@@ -99,10 +97,9 @@
     </div>
   </div>
 
-  <!-- Question 2 : Cloze multi-part avec Dropdowns et Inputs texte -->
   <div class="content" id="yui_3_18_1_1_1794233693925_70">
     <div class="formulation clearfix" id="yui_3_18_1_1_1794233693925_69">
-      <h4 class="accesshide">Question 2 (Cas avec tableau, Dropdown & Inputs texte)</h4>
+      <h4 class="accesshide">Section 2</h4>
       <input type="hidden" name="q3876556:1_:sequencecheck" value="1">
       <p id="yui_3_18_1_1_1794233693925_68">L'objectif de ce mini cas est de savoir interpréter un tableau de répartition des charges indirectes :</p>
       
@@ -151,25 +148,23 @@
     </div>
   </div>
 
-  <!-- Question 3 : Réponse directe numérique (Input texte) -->
   <div class="content">
     <div class="formulation clearfix">
-      <h4 class="accesshide">Question 3 (Champ texte direct)</h4>
+      <h4 class="accesshide">Section 3</h4>
       <input type="hidden" name="q3876556:2_:sequencecheck" value="1">
       <div class="qtext">
         <p>Une entreprise possède plusieurs centres d'analyses auxiliaires dont deux d'entre eux se fournissent des prestations réciproques : le centre Restaurant d'entreprise et le centre Nettoyage. Après la répartition primaire, le centre Restauration d'entreprise présente un total de 9,1 K€ de charges indirectes et le centre Nettoyage 1,2 K€. Le contrôleur de gestion évalue à 9,7 % les prestations fournies par le Restaurant d'entreprise au Nettoyage et 6,4 % les prestations fournies par le Nettoyage au Restaurant d'entreprise. Quel sera le montant des charges du centre Restaurant d'entreprise après prestations réciproques (en k€) ?</p>
       </div>
       <div class="ablock d-flex flex-wrap align-items-center">
-        <label for="q3876556:2_answer">Réponse : </label>
+        <label for="q3876556:2_answer">Input : </label>
         <span class="answer ms-2">
-          <input type="text" name="q3876556:2_answer" id="q3876556:2_answer" size="25" placeholder="Votre résultat en k€">
+          <input type="text" name="q3876556:2_answer" id="q3876556:2_answer" size="25">
         </span>
       </div>
     </div>
   </div>
 
   <script>
-    // Met à jour l'affichage de l'URL sur la page de test pour visualiser facilement
     function refreshDisplay() {
       document.getElementById('urlValue').textContent = window.location.href;
     }

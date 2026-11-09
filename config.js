@@ -36,7 +36,7 @@ const CONFIG = {
       endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
       defaultModel: 'gemini-2.0-flash',
       models: [
-        'gemini-2.0-flash',   // Le plus rapide pour les quiz en temps réel + Vision
+        'gemini-2.0-flash',   // Traitement ultra-rapide en temps réel + Vision
         'gemini-1.5-flash',   // Très stable et économique
         'gemini-1.5-pro',     // Raisonnement complexe et lecture de documents
         'gemini-3.8-flash'    // Nouvelle génération haute vitesse

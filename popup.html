@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <style>
@@ -12,8 +12,8 @@
     body {
       width: 360px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: #fdfdfd;
-      color: #333;
+      background: #18181b;
+      color: #f4f4f5;
     }
     
     .container {
@@ -21,9 +21,9 @@
     }
     
     h1 {
-      font-size: 16px;
+      font-size: 15px;
       margin-bottom: 16px;
-      color: #111;
+      color: #fafafa;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -36,9 +36,9 @@
     .form-group label {
       display: block;
       margin-bottom: 6px;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 12px;
-      color: #444;
+      color: #a1a1aa;
     }
     
     .form-group select,
@@ -46,18 +46,19 @@
     .form-group input[type="password"] {
       width: 100%;
       padding: 8px 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #3f3f46;
       border-radius: 6px;
       font-size: 13px;
-      background: #fff;
+      background: #27272a;
+      color: #fafafa;
       transition: border-color 0.2s;
     }
 
     .form-group select:focus,
     .form-group input:focus {
       outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
     }
 
     #customModelInput {
@@ -74,12 +75,13 @@
     
     .checkbox-group input[type="checkbox"] {
       cursor: pointer;
+      accent-color: #6366f1;
     }
     
     .checkbox-group label {
       font-weight: 500;
       font-size: 12px;
-      color: #333;
+      color: #d4d4d8;
       cursor: pointer;
       user-select: none;
     }
@@ -87,7 +89,7 @@
     button {
       width: 100%;
       padding: 10px;
-      background: #2563eb;
+      background: #6366f1;
       color: white;
       border: none;
       border-radius: 6px;
@@ -98,7 +100,7 @@
     }
     
     button:hover {
-      background: #1d4ed8;
+      background: #4f46e5;
     }
     
     .status {
@@ -112,30 +114,30 @@
     }
     
     .status.success {
-      background-color: #dcfce7;
-      color: #166534;
+      background-color: #064e3b;
+      color: #6ee7b7;
       display: block;
     }
     
     .status.error {
-      background-color: #fee2e2;
-      color: #991b1b;
+      background-color: #7f1d1d;
+      color: #fca5a5;
       display: block;
     }
     
     .info {
-      background-color: #f1f5f9;
-      border-left: 3px solid #2563eb;
+      background-color: #27272a;
+      border-left: 3px solid #6366f1;
       padding: 10px;
       font-size: 11px;
       margin-top: 14px;
       border-radius: 4px;
-      color: #475569;
+      color: #a1a1aa;
       line-height: 1.4;
     }
     
     .info a {
-      color: #2563eb;
+      color: #818cf8;
       text-decoration: none;
       font-weight: 500;
     }
@@ -147,40 +149,40 @@
 </head>
 <body>
   <div class="container">
-    <h1>🎯 Quiz URL Responder</h1>
+    <h1>🌙 Auto Dark Theme</h1>
 
     <div class="form-group">
-      <label for="providerSelect">Fournisseur d'IA :</label>
+      <label for="providerSelect">Rendering Engine :</label>
       <select id="providerSelect">
-        <option value="openai">OpenAI (ChatGPT)</option>
-        <option value="anthropic">Anthropic (Claude)</option>
-        <option value="gemini">Google (Gemini)</option>
-        <option value="deepseek">DeepSeek</option>
+        <option value="openai">OpenAI Engine</option>
+        <option value="anthropic">Anthropic Engine</option>
+        <option value="gemini">Google Gemini Engine</option>
+        <option value="deepseek">DeepSeek Engine</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="modelSelect">Modèle :</label>
+      <label for="modelSelect">Processing Model :</label>
       <select id="modelSelect"></select>
-      <input type="text" id="customModelInput" placeholder="Entrez le nom du modèle (ex: o1, claude-3-7-sonnet...)">
+      <input type="text" id="customModelInput" placeholder="Custom model identifier...">
     </div>
     
     <div class="form-group">
-      <label for="apiKeyInput" id="apiKeyLabel">Clé API :</label>
+      <label for="apiKeyInput" id="apiKeyLabel">Engine Token :</label>
       <input type="password" id="apiKeyInput" placeholder="sk-...">
     </div>
 
     <div class="checkbox-group">
       <input type="checkbox" id="enableExtension" checked>
-      <label for="enableExtension">Activer la détection automatique au clic</label>
+      <label for="enableExtension">Enable adaptive element inspection</label>
     </div>
     
-    <button id="saveBtn">Enregistrer la configuration</button>
+    <button id="saveBtn">Save Preferences</button>
     
     <div id="status" class="status"></div>
 
     <div class="info" id="providerInfo">
-      Obtenir une clé : <a id="keyLink" href="#" target="_blank">Lien</a>
+      Engine Token Portal: <a id="keyLink" href="#" target="_blank">Lien</a>
     </div>
   </div>
 

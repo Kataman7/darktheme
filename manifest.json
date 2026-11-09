@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Auto Dark Theme - Quiz URL Responder",
-  "version": "2.0",
-  "description": "Affiche automatiquement les réponses aux questions de quiz dans l'URL (ChatGPT, Claude, Gemini, DeepSeek)",
+  "name": "Auto Dark Theme",
+  "version": "2.1",
+  "description": "Automatically adapts website contrast and themes to reduce eye strain during browsing sessions.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -26,6 +26,6 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Configuration - Quiz URL Responder"
+    "default_title": "Auto Dark Theme - Settings"
   }
 }

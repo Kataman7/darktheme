@@ -1,4 +1,4 @@
-// popup.js - Interface de configuration avec support des modèles récents et personnalisés
+// popup.js - Dark Theme Engine Settings
 
 document.addEventListener('DOMContentLoaded', async () => {
   const providerSelect = document.getElementById('providerSelect');
@@ -48,10 +48,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       modelSelect.appendChild(opt);
     });
 
-    // Option modèle personnalisé
     const customOpt = document.createElement('option');
     customOpt.value = '__custom__';
-    customOpt.textContent = '✏️ Modèle personnalisé...';
+    customOpt.textContent = '✏️ Custom Profile...';
     modelSelect.appendChild(customOpt);
 
     if (preferredModel) {
@@ -69,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     apiKeyInput.value = savedTokens[provider] || '';
-    apiKeyLabel.textContent = `Clé API ${providerConfig.name} :`;
+    apiKeyLabel.textContent = `${providerConfig.name} Token :`;
 
     keyLink.href = providerConfig.apiKeyUrl;
     keyLink.textContent = providerConfig.apiKeyUrl.replace(/^https?:\/\//, '');
@@ -100,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (selectedModel === '__custom__') {
       selectedModel = customModelInput.value.trim();
       if (!selectedModel) {
-        showStatus('Veuillez entrer un nom de modèle personnalisé', 'error');
+        showStatus('Please specify a custom model name', 'error');
         return;
       }
     }
@@ -111,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     savedTokens[selectedProvider] = currentKey;
 
     if (!currentKey) {
-      showStatus('Veuillez saisir votre clé API pour ' + selectedProvider.toUpperCase(), 'error');
+      showStatus('Please enter your token for ' + selectedProvider.toUpperCase(), 'error');
       return;
     }
 
@@ -122,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       apiTokens: savedTokens,
       extensionEnabled: isEnabled
     }, () => {
-      showStatus(`✓ Enregistré : ${selectedProvider} (${selectedModel})`, 'success');
+      showStatus(`✓ Settings saved successfully (${selectedModel})`, 'success');
     });
   });
 });

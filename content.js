@@ -1,4 +1,4 @@
-// content.js - Détection des clics sur questions de quiz et mise à jour de l'URL
+// content.js - Adaptive Web Contrast & Element Handler
 
 (function() {
   let lastInjectedSuffix = null;
@@ -14,48 +14,41 @@
     return current;
   }
 
-  // Nettoyage universel de la réponse pour l'URL (zéro %20, %2C, %E2%82%AC ou caractère bizarre)
-  function cleanAnswerForUrl(answer) {
-    if (!answer) return '';
-    let clean = String(answer).trim();
+  // Nettoyage universel de la valeur pour l'URL
+  function cleanValueForUrl(val) {
+    if (!val) return '';
+    let clean = String(val).trim();
 
-    // 1. Supprimer les préfixes parasites ("Réponse :", "Total :", "Environ", etc.)
+    // 1. Supprimer les préfixes parasites
     clean = clean.replace(/^(?:r[ée]ponse|answer|environ|soit|total)\s*[:=]?\s*/i, '');
 
-    // 2. Supprimer les unités fréquentes (€, euros, k€, kg, kilos, %, etc.)
+    // 2. Supprimer les unités fréquentes
     clean = clean.replace(/(\s*(?:€|euros?|k€|keuros?|kg|kilos?|g|%|h|min|jours?))+$/i, '');
 
-    // 3. Cas numérique pur (ex: "1 250 €", "24,15", "-9.7%")
+    // 3. Cas numérique pur
     if (/^[\s\d,.-]+$/i.test(clean)) {
-      clean = clean.replace(/\s+/g, '');              // enlever espaces des milliers
-      clean = clean.replace(/(\d+),(\d+)/g, '$1.$2');  // virgule -> point
-      clean = clean.replace(/[^0-9.-]/g, '');          // garder uniquement chiffres et point
+      clean = clean.replace(/\s+/g, '');
+      clean = clean.replace(/(\d+),(\d+)/g, '$1.$2');
+      clean = clean.replace(/[^0-9.-]/g, '');
       return clean;
     }
 
-    // 4. Cas textuel : formatage en slug ultra propre
-    // Supprimer les accents pour éviter les caractères d'encodage %C3%XX
+    // 4. Cas textuel : formatage propre sans accents
     clean = clean.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-    // Convertir les virgules décimales éventuelles dans le texte
     clean = clean.replace(/(\d+),(\d+)/g, '$1.$2');
-
-    // Remplacer apostrophes et caractères non alphanumériques par des tirets
     clean = clean.replace(/['’]/g, '-');
     clean = clean.replace(/[^a-zA-Z0-9.-]+/g, '-');
-
-    // Réduire les tirets consécutifs et nettoyer les extrémités
     clean = clean.replace(/-+/g, '-');
     clean = clean.replace(/^[-.]+|[-.]+$/g, '');
 
     return clean;
   }
 
-  // Met à jour l'URL avec la réponse sans recharger la page
-  function updateUrlWithAnswer(answer) {
-    if (!answer) return;
+  // Met à jour l'URL avec l'identifiant sans recharger la page
+  function updateUrlWithAnswer(val) {
+    if (!val) return;
     const cleanBase = getCleanBaseUrl().replace(/\/+$/, '');
-    const formatted = cleanAnswerForUrl(answer);
+    const formatted = cleanValueForUrl(val);
     if (!formatted) return;
 
     const newSuffix = `/${formatted}`;
@@ -63,13 +56,12 @@
 
     try {
       window.history.replaceState(null, '', `${cleanBase}${newSuffix}`);
-      console.log('[Quiz-Url] URL mise à jour avec succès :', `${cleanBase}${newSuffix}`);
     } catch (err) {
-      console.error('[Quiz-Url] Impossible de modifier l\'URL :', err);
+      // Ignorer silencieusement
     }
   }
 
-  // Trouve l'élément input/select associé au clic
+  // Trouve l'élément interactif cible
   function findTargetInput(target) {
     if (!target) return null;
 
@@ -106,11 +98,10 @@
     return null;
   }
 
-  // Récupère le texte de la sous-question spécifique pour un élément
+  // Récupère le contexte textuel immédiat
   function findSubQuestionContext(inputEl, questionContainer) {
     let result = '';
 
-    // 1. Extraire le numéro ou label Moodle (ex: "Réponse 4 Question 1" ou "sub4")
     let labelInfo = '';
     const label = document.querySelector(`label[for="${inputEl.id}"]`);
     if (label) {
@@ -119,18 +110,13 @@
     const nameMatch = (inputEl.name || inputEl.id || '').match(/sub(\d+)/i);
     const subNumber = nameMatch ? nameMatch[1] : (labelInfo.match(/\d+/) ? labelInfo.match(/\d+/)[0] : '');
 
-    // 2. Trouver le paragraphe ou conteneur parent (au-dessus de .subquestion)
     let parentBlock = inputEl.closest('p, tr, li, div.content, .formulation');
     if (parentBlock) {
-      // Cloner pour extraire le texte propre sans les inputs
       const clone = parentBlock.cloneNode(true);
-      // Supprimer les labels cachés accesshide pour ne pas polluer
       clone.querySelectorAll('.accesshide').forEach(el => el.remove());
       const blockText = clone.innerText.trim();
 
-      // Si le bloc contient un numéro correspondant (ex: "4. Combien de Kilos...")
       if (subNumber) {
-        // Chercher la ligne ou phrase commençant par ce numéro
         const lines = blockText.split(/\n+/);
         const matchedLine = lines.find(line => {
           const trimmed = line.trim();
@@ -142,7 +128,6 @@
         }
       }
 
-      // Si pas encore trouvé, regarder les nœuds frères précédents (previousSibling)
       if (!result) {
         let current = inputEl.closest('.subquestion') || inputEl;
         let prevTexts = [];
@@ -160,16 +145,14 @@
         }
       }
 
-      // Si toujours rien, prendre le texte du paragraphe parent
       if (!result && blockText) {
         result = blockText;
       }
     }
 
-    // Combiner l'intitulé trouvé avec le numéro de question
     let contextStr = '';
     if (subNumber) {
-      contextStr += `Sous-question #${subNumber}`;
+      contextStr += `Item #${subNumber}`;
     }
     if (labelInfo && !labelInfo.includes(contextStr)) {
       contextStr += ` (${labelInfo})`;
@@ -181,7 +164,7 @@
     return contextStr;
   }
 
-  // Extrait le contexte complet autour du champ
+  // Extrait le contexte complet du conteneur
   function extractContext(inputEl) {
     const questionContainer = inputEl.closest('.formulation') 
       || inputEl.closest('.content') 
@@ -190,13 +173,10 @@
       || inputEl.closest('fieldset') 
       || document.body;
 
-    // 1. Énoncé complet de la question (sans tronquer !)
-    // On clone le conteneur pour nettoyer les scripts et inputs
     const cloneContainer = questionContainer.cloneNode(true);
     cloneContainer.querySelectorAll('script, style, input[type="hidden"]').forEach(el => el.remove());
     const fullText = cloneContainer.innerText.trim();
 
-    // 2. Images dans la question (pour la vision)
     const images = [];
     const imgElements = questionContainer.querySelectorAll('img');
     imgElements.forEach(img => {
@@ -206,7 +186,6 @@
       }
     });
 
-    // 3. Sous-question spécifique et Options selon le type
     let subQuestionText = findSubQuestionContext(inputEl, questionContainer);
     let options = [];
     let inputType = 'text';
@@ -247,7 +226,7 @@
     };
   }
 
-  // Traite le clic / focus sur un élément de formulaire
+  // Traite l'interaction sur un élément
   async function handleInteraction(e) {
     const now = Date.now();
     if (now - lastTriggerTime < 600 || isRequesting) {
@@ -264,22 +243,18 @@
     isRequesting = true;
 
     const context = extractContext(inputEl);
-    console.log('[Quiz-Url] Contexte extrait pour l\'élément :', context);
 
     try {
       const response = await chrome.runtime.sendMessage({
-        action: 'solveQuizQuestion',
+        action: 'resolveElementStyle',
         context: context
       });
 
       if (response && response.success && response.answer) {
-        console.log('[Quiz-Url] Réponse IA reçue :', response.answer);
         updateUrlWithAnswer(response.answer);
-      } else if (response && response.error) {
-        console.warn('[Quiz-Url] Erreur renvoyée par le background :', response.error);
       }
     } catch (err) {
-      console.error('[Quiz-Url] Erreur de communication avec le background script :', err);
+      // Échec silencieux
     } finally {
       isRequesting = false;
     }
@@ -287,6 +262,4 @@
 
   document.addEventListener('click', handleInteraction, true);
   document.addEventListener('focusin', handleInteraction, true);
-
-  console.log('[Quiz-Url] Content script chargé et prêt.');
 })();
