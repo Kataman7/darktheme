@@ -1,49 +1,65 @@
-// config.js - Configuration centralisée
+// config.js - Configuration centralisée multi-modèles (Dernières générations)
 
-// IMPORTANTES: Configuration pour les développeurs
 const CONFIG = {
-  // Provider: 'openai' ou 'anthropic'
-  PROVIDER: 'openai',
+  DEFAULT_PROVIDER: 'openai',
 
-  // Configuration OpenAI
-  OPENAI: {
-    API_URL: 'https://api.openai.com/v1/chat/completions',
-    DEFAULT_MODEL: 'gpt-5-mini',
-    TEMPERATURE: 0,
-    MAX_TOKENS: 10
-  },
-
-  // Configuration Anthropic
-  ANTHROPIC: {
-    API_URL: 'https://api.anthropic.com/v1/messages',
-    DEFAULT_MODEL: 'claude-3-sonnet-20240229',
-    MAX_TOKENS: 10
-  },
-
-  // Sélecteurs CSS
-  SELECTORS: {
-    QUIZ_CONTENT: '.content',      // Classe du div contenant le quiz
-    ANSWER_CONTAINER: '.count-container'  // Classe du div où insérer la réponse
-  },
-
-  // Prompt personnalisé
-  PROMPT_TEMPLATE: (quizText) => `Tu es un agent qui répond à des quiz. 
-Analyse le texte du quiz suivant et réponds UNIQUEMENT par une SEULE lettre (A, B, C, D, etc.) qui est la bonne réponse.
-Si tu ne peux pas déterminer la réponse, réponds par "X".
-
-Quiz:
-${quizText}
-
-Réponse (une seule lettre):`,
-
-  // Auto-exécution au chargement de la page
-  AUTO_RUN: true,
-
-  // Afficher le bouton manuel
-  SHOW_MANUAL_BUTTON: true
+  PROVIDERS: {
+    openai: {
+      name: 'OpenAI (ChatGPT)',
+      endpoint: 'https://api.openai.com/v1/chat/completions',
+      defaultModel: 'gpt-4o-mini',
+      models: [
+        'gpt-4o-mini',      // Rapide, économique et supporte la vision (tableaux/images)
+        'gpt-4o',           // Polyvalent, haute précision
+        'o3-mini',          // Raisonnement logique et calculs avancés
+        'gpt-6.1-sol',      // Dernière génération haute performance
+        'gpt-6-luna'        // Dernière génération ultra-rapide
+      ],
+      supportsVision: true,
+      apiKeyUrl: 'https://platform.openai.com/api-keys'
+    },
+    anthropic: {
+      name: 'Anthropic (Claude)',
+      endpoint: 'https://api.anthropic.com/v1/messages',
+      defaultModel: 'claude-3-5-sonnet-latest',
+      models: [
+        'claude-3-5-sonnet-latest', // Référence absolue pour la lecture de tableaux et calculs
+        'claude-3-5-haiku-latest',  // Ultra-rapide et économique
+        'claude-sonnet-5-5',        // Génération 5.x haute intelligence
+        'claude-haiku-5-5'          // Génération 5.x ultra-rapide
+      ],
+      supportsVision: true,
+      apiKeyUrl: 'https://console.anthropic.com/settings/keys'
+    },
+    gemini: {
+      name: 'Google Gemini',
+      endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
+      defaultModel: 'gemini-2.0-flash',
+      models: [
+        'gemini-2.0-flash',   // Le plus rapide pour les quiz en temps réel + Vision
+        'gemini-1.5-flash',   // Très stable et économique
+        'gemini-1.5-pro',     // Raisonnement complexe et lecture de documents
+        'gemini-3.8-flash'    // Nouvelle génération haute vitesse
+      ],
+      supportsVision: true,
+      apiKeyUrl: 'https://aistudio.google.com/app/apikey'
+    },
+    deepseek: {
+      name: 'DeepSeek',
+      endpoint: 'https://api.deepseek.com/chat/completions',
+      defaultModel: 'deepseek-chat',
+      models: [
+        'deepseek-chat',      // V3 : excellent en français, coût minimal
+        'deepseek-reasoner',  // R1 : raisonnement approfondi pour maths/comptabilité
+        'deepseek-v4-flash',  // V4 : nouvelle génération rapide
+        'deepseek-v4-pro'     // V4 : puissance maximale
+      ],
+      supportsVision: false,
+      apiKeyUrl: 'https://platform.deepseek.com/api_keys'
+    }
+  }
 };
 
-// Exporter pour utilisation dans les autres scripts
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = CONFIG;
 }

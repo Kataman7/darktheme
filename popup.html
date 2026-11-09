@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+  <meta charset="UTF-8">
   <style>
     * {
       margin: 0;
@@ -9,66 +10,75 @@
     }
     
     body {
-      width: 350px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #fff;
+      width: 360px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #fdfdfd;
+      color: #333;
     }
     
     .container {
-      padding: 20px;
+      padding: 18px;
     }
     
     h1 {
       font-size: 16px;
-      margin-bottom: 20px;
-      color: #333;
-      text-align: center;
+      margin-bottom: 16px;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     
     .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 600;
-      font-size: 13px;
-      color: #333;
+      font-size: 12px;
+      color: #444;
     }
     
+    .form-group select,
+    .form-group input[type="text"],
     .form-group input[type="password"] {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #ddd;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 13px;
-      font-family: 'Courier New', monospace;
+      background: #fff;
       transition: border-color 0.2s;
     }
-    
-    .form-group input[type="password"]:focus {
+
+    .form-group select:focus,
+    .form-group input:focus {
       outline: none;
-      border-color: #00a67e;
-      box-shadow: 0 0 0 2px rgba(0, 166, 126, 0.1);
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+    #customModelInput {
+      margin-top: 6px;
+      display: none;
     }
     
     .checkbox-group {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
     
     .checkbox-group input[type="checkbox"] {
-      width: auto;
-      margin: 0;
       cursor: pointer;
     }
     
     .checkbox-group label {
-      font-weight: 600;
-      font-size: 13px;
+      font-weight: 500;
+      font-size: 12px;
       color: #333;
       cursor: pointer;
       user-select: none;
@@ -77,27 +87,23 @@
     button {
       width: 100%;
       padding: 10px;
-      background: linear-gradient(135deg, #00a67e 0%, #0d8c6d 100%);
+      background: #2563eb;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
       font-size: 13px;
-      transition: transform 0.2s;
+      transition: background 0.2s;
     }
     
     button:hover {
-      transform: translateY(-1px);
-    }
-    
-    button:active {
-      transform: translateY(0);
+      background: #1d4ed8;
     }
     
     .status {
-      margin-top: 12px;
-      padding: 10px;
+      margin-top: 10px;
+      padding: 8px;
       border-radius: 4px;
       font-size: 12px;
       text-align: center;
@@ -106,31 +112,32 @@
     }
     
     .status.success {
-      background-color: #d4edda;
-      color: #155724;
+      background-color: #dcfce7;
+      color: #166534;
       display: block;
     }
     
     .status.error {
-      background-color: #f8d7da;
-      color: #721c24;
+      background-color: #fee2e2;
+      color: #991b1b;
       display: block;
     }
     
     .info {
-      background-color: #f0f0f0;
-      border-left: 3px solid #00a67e;
-      padding: 12px;
-      font-size: 12px;
-      margin-top: 16px;
+      background-color: #f1f5f9;
+      border-left: 3px solid #2563eb;
+      padding: 10px;
+      font-size: 11px;
+      margin-top: 14px;
       border-radius: 4px;
-      color: #555;
+      color: #475569;
       line-height: 1.4;
     }
     
     .info a {
-      color: #00a67e;
+      color: #2563eb;
       text-decoration: none;
+      font-weight: 500;
     }
     
     .info a:hover {
@@ -140,27 +147,44 @@
 </head>
 <body>
   <div class="container">
-    <h1>🤖 ChatGPT Token</h1>
+    <h1>🎯 Quiz URL Responder</h1>
+
+    <div class="form-group">
+      <label for="providerSelect">Fournisseur d'IA :</label>
+      <select id="providerSelect">
+        <option value="openai">OpenAI (ChatGPT)</option>
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="gemini">Google (Gemini)</option>
+        <option value="deepseek">DeepSeek</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="modelSelect">Modèle :</label>
+      <select id="modelSelect"></select>
+      <input type="text" id="customModelInput" placeholder="Entrez le nom du modèle (ex: o1, claude-3-7-sonnet...)">
+    </div>
     
     <div class="form-group">
-      <label for="apiToken">Your OpenAI Token:</label>
-      <input type="password" id="apiToken" placeholder="sk-...">
+      <label for="apiKeyInput" id="apiKeyLabel">Clé API :</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-...">
     </div>
 
     <div class="checkbox-group">
-      <input type="checkbox" id="enableExtension">
-      <label for="enableExtension">Enable double-click functionality</label>
+      <input type="checkbox" id="enableExtension" checked>
+      <label for="enableExtension">Activer la détection automatique au clic</label>
     </div>
     
-    <button id="saveBtn">Save</button>
+    <button id="saveBtn">Enregistrer la configuration</button>
     
     <div id="status" class="status"></div>
 
-    <div class="info">
-      Get your token: <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+    <div class="info" id="providerInfo">
+      Obtenir une clé : <a id="keyLink" href="#" target="_blank">Lien</a>
     </div>
   </div>
 
+  <script src="config.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
